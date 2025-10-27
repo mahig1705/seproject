@@ -11,7 +11,6 @@ import amenitiesRoutes from "./routes/amenities.routes";
 import billsRoutes from "./routes/bills.routes";
 import bookingsRoutes from "./routes/bookings.routes";
 import issuesRoutes from "./routes/issues.routes";
-import paymentsRoutes from "./routes/payments.routes";
 import techniciansRoutes from "./routes/technicians.routes";
 import visitorsRoutes from "./routes/visitors.routes";
 
@@ -23,14 +22,18 @@ const app: Application = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/habitat";
 
-app.use(
-  cors({
-    origin: "http://localhost:3000", // your frontend URL
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // if you send cookies or auth headers
-  })
-);
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'Cache-Control',
+    'Pragma',
+    'Expires'
+  ],
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(morgan("dev"));
@@ -52,7 +55,6 @@ app.use("/api/amenities", amenitiesRoutes);
 app.use("/api/bills", billsRoutes);
 app.use("/api/bookings", bookingsRoutes);
 app.use("/api/issues", issuesRoutes);
-app.use("/api/payments", paymentsRoutes);
 app.use("/api/technicians", techniciansRoutes);
 app.use("/api/visitors", visitorsRoutes);
 

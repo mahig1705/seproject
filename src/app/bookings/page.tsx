@@ -48,7 +48,6 @@ export default function BookingsPage() {
     }
     fetchBookings();
     fetchAmenities();
-    fetchTechnicians();
   }, []);
 
   const fetchBookings = async () => {
@@ -72,14 +71,7 @@ export default function BookingsPage() {
     }
   };
 
-  const fetchTechnicians = async () => {
-    try {
-      const response = await apiService.getTechnicians();
-      setTechnicians(response.data);
-    } catch (error) {
-      console.error('Failed to fetch technicians:', error);
-    }
-  };
+  
 
   const handleCreateBooking = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -165,7 +165,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         'payments:read'
       ],
       [UserRole.RESIDENT]: [
-        'bills:read', 'bills:write',
+        'bills:read','bills:write',
         'notices:read',
         'amenities:read',
         'bookings:read', 'bookings:write',
@@ -174,7 +174,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         'payments:read'
       ],
       [UserRole.TENANT]: [
-        'bills:read', 'bills:write',
+        'bills:read',
         'notices:read',
         'amenities:read',
         'bookings:read', 'bookings:write',

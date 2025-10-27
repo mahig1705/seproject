@@ -7,6 +7,8 @@ export enum UserRole {
   TECHNICIAN = 'technician'
 }
 
+
+
 export enum Gender {
   MALE = 'male',
   FEMALE = 'female',
@@ -36,11 +38,12 @@ export enum BookingStatus {
 }
 
 export enum PaymentStatus {
-  PENDING = 'pending',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
-  REFUNDED = 'refunded'
+  PENDING = 'Pending',
+  COMPLETED = 'Completed',
+  FAILED = 'Failed',
+  REFUNDED = 'Refunded',
 }
+
 
 export interface User {
   _id: string;

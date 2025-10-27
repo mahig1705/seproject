@@ -12,7 +12,8 @@ import {
   Notice,
   Amenity,
   Booking,
-  Technician
+  Technician,
+  PaymentStatus
 } from '@/types';
 
 class ApiService {
@@ -164,14 +165,59 @@ deleteIssue(id: string) {
     return this.api.delete<ApiResponse<null>>(`/notices/${id}`).then(res => res.data);
   }
 
-  // ---------------- Bills ----------------
-  getBills(params?: { userId?: string; status?: string; page?: number; limit?: number }) {
-    return this.api.get<PaginatedResponse<Bill>>('/bills', { params }).then(res => res.data);
-  }
+ // ---------------- Bills ----------------
+// ---------------- Bills ----------------
+getBills(params?: { userId?: string; status?: string; page?: number; limit?: number }) {
+  return this.api.get<PaginatedResponse<Bill>>('/bills', {
+    params,
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
+  }).then(res => res.data);
+}
 
-  payBill(billId: string, amount: number, gatewayRef: string) {
-    return this.api.post<ApiResponse<Payment>>('/bills/pay', { billId, amount, gatewayRef }).then(res => res.data);
-  }
+
+getBillById(id: string) {
+  return this.api.get<ApiResponse<Bill>>(`/bills/${id}`).then(res => res.data);
+}
+
+createBill(data: {
+  user: string;
+  description: string;
+  amount: number;
+  dueDate: string;
+}) {
+  return this.api.post<ApiResponse<Bill>>('/bills', data).then(res => res.data);
+}
+
+updateBill(id: string, data: Partial<{
+  description: string;
+  amount: number;
+  dueDate: string;
+  status: PaymentStatus;
+}>) {
+  return this.api.put<ApiResponse<Bill>>(`/bills/${id}`, data).then(res => res.data);
+}
+
+deleteBill(id: string) {
+  return this.api.delete<ApiResponse<null>>(`/bills/${id}`).then(res => res.data);
+}
+
+payBill(billId: string, amount: number, gatewayRef: string) {
+  return this.api.patch<ApiResponse<Bill>>(`/bills/${billId}/pay`, { amount, gatewayRef }).then(res => res.data);
+}
+
+generateBills(data: Array<{
+  user: string;
+  description: string;
+  amount: number;
+  dueDate: string;
+}>) {
+  return this.api.post<ApiResponse<Bill[]>>('/bills/generate', data).then(res => res.data);
+}
+
 
   // ---------------- Payments ----------------
 async getPayments(params?: {

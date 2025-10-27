@@ -65,7 +65,7 @@ export default function DashboardPage() {
 
           const billsResp = await apiService.getBills({ page: 1, limit: 100 });
           totalBills = billsResp.data?.length || 0;
-          pendingBills = billsResp.data?.filter(b => b.status === 'pending').length || 0;
+          pendingBills = billsResp.data?.filter(b => b.status === 'Pending').length || 0;
 
           const issuesRespFull = await apiService.getIssues({ page: 1, limit: 100 });
           totalIssues = issuesRespFull?.length || 0;

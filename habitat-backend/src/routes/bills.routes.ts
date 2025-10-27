@@ -10,4 +10,9 @@ router.post('/', controller.create.bind(controller));
 router.put('/:id', controller.update.bind(controller));
 router.delete('/:id', controller.delete.bind(controller));
 
+// Custom routes
+router.patch('/:id/pay', controller.payBill.bind(controller));
+router.post('/generate', controller.generateBills.bind(controller));
+router.post('/:id/pay', controller.payBill.bind(controller));
+
 export default router;
