@@ -1,23 +1,39 @@
-import VisitorsModel, { IVisitors } from '../models/visitors.model';
+import VisitorModel, { IVisitor } from '../models/visitors.model';
 
 export class VisitorsService {
-    async getAll(): Promise<IVisitors[]> {
-        return VisitorsModel.find();
-    }
+  // Get all visitors
+  // services/visitors.service.ts
+async getAll(filter: any = {}): Promise<IVisitor[]> {
+  return VisitorModel.find(filter);
+}
 
-    async getById(id: string) {
-        return VisitorsModel.findById(id);
-    }
+  // Get one visitor
+  async getById(id: string): Promise<IVisitor | null> {
+    return VisitorModel.findById(id);
+  }
 
-    async create(data: Partial<IVisitors>) {
-        return VisitorsModel.create(data);
-    }
+  // Create visitor
+  async create(data: Partial<IVisitor>): Promise<IVisitor> {
+    if (!data.inTime) data.inTime = new Date();
+    return VisitorModel.create(data);
+  }
 
-    async update(id: string, data: Partial<IVisitors>) {
-        return VisitorsModel.findByIdAndUpdate(id, data, { new: true });
-    }
+  // ✅ Checkout visitor (set outTime)
+  async checkoutVisitor(id: string): Promise<IVisitor | null> {
+    return VisitorModel.findByIdAndUpdate(
+      id,
+      { outTime: new Date() },
+      { new: true }
+    );
+  }
 
-    async delete(id: string) {
-        return VisitorsModel.findByIdAndDelete(id);
-    }
+  // Update visitor
+  async update(id: string, data: Partial<IVisitor>): Promise<IVisitor | null> {
+    return VisitorModel.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  // Delete visitor
+  async delete(id: string): Promise<IVisitor | null> {
+    return VisitorModel.findByIdAndDelete(id);
+  }
 }

@@ -38,13 +38,17 @@ app.use(cors({
 app.use(express.json());
 app.use(morgan("dev"));
 
-mongoose
-  .connect(MONGO_URI)
-  .then(() => console.log("Mongo connected"))
-  .catch((err) => {
-    console.error("Mongo connection error:", err);
-    process.exit(1);
-  });
+mongoose.connect(MONGO_URI, {
+  tls: true,
+  tlsAllowInvalidCertificates: true, // 👈 local testing only
+})
+.then(() => console.log("✅ MongoDB connected successfully"))
+.catch((err) => {
+  console.error("❌ Mongo connection error:", err);
+  process.exit(1);
+});
+
+
 
 app.get("/", (req, res) => res.send("Habitat backend running"));
 

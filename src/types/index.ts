@@ -86,8 +86,7 @@ export interface Visitor {
   name: string;
   vehicle?: string;
   purpose: string;
-  hostId: string;
-  host: User;
+  flatNumber: string;
   inTime: string;
   outTime?: string;
   createdAt: string;

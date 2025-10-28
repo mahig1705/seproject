@@ -25,6 +25,7 @@ interface DashboardStats {
   totalIssues: number;
   totalBills: number;
   totalVisitors: number;
+  activeVisitors: number;
   pendingIssues: number;
   pendingBills: number;
   recentNotices: any[];
@@ -38,6 +39,7 @@ export default function DashboardPage() {
     totalIssues: 0,
     totalBills: 0,
     totalVisitors: 0,
+    activeVisitors: 0,
     pendingIssues: 0,
     pendingBills: 0,
     recentNotices: [],
@@ -45,56 +47,95 @@ export default function DashboardPage() {
   });
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setIsLoading(true);
+ useEffect(() => {
+  const fetchDashboardData = async () => {
+    try {
+      console.log("📊 Fetching dashboard data...");
+      setIsLoading(true);
 
-        // Fetch notices and issues using your apiService
-        const [noticesResp, issues] = await Promise.all([
-          apiService.getNotices({ limit: 5 }),
-          apiService.getIssues({ page: 1, limit: 5 })
-        ]);
+      // Fetch notices and issues (shown to all)
+      const [noticesResp, issues] = await Promise.all([
+        apiService.getNotices({ limit: 5 }),
+        apiService.getIssues({ page: 1, limit: 5 })
+      ]);
 
-        // Fetch users/bills/visitors stats for admin/committee
-        let totalUsers = 0, totalBills = 0, totalVisitors = 0, pendingBills = 0, totalIssues = 0, pendingIssues = 0;
+      console.log("✅ Notices:", noticesResp);
+      console.log("✅ Issues (latest 5):", issues);
 
-        if (hasRole([UserRole.ADMIN, UserRole.COMMITTEE])) {
-          const usersResp = await apiService.getUsers();
-          totalUsers = usersResp.data?.length || 0;
+      // Default stats
+      let totalUsers = 0,
+        totalBills = 0,
+        pendingBills = 0,
+        totalVisitors = 0,
+        activeVisitors = 0,
+        totalIssues = 0,
+        pendingIssues = 0;
 
-          const billsResp = await apiService.getBills({ page: 1, limit: 100 });
-          totalBills = billsResp.data?.length || 0;
-          pendingBills = billsResp.data?.filter(b => b.status === 'Pending').length || 0;
+      // 🧩 Security role should only see visitor stats
+      if (hasRole([UserRole.SECURITY])) {
+        const visitorsResp = await apiService.getVisitors({ page: 1, limit: 100 });
+        console.log("🚪 Visitors response:", visitorsResp);
 
-          const issuesRespFull = await apiService.getIssues({ page: 1, limit: 100 });
-          totalIssues = issuesRespFull?.length || 0;
-          pendingIssues = issuesRespFull?.filter(i => i.status === 'open').length || 0;
+        const visitors = visitorsResp.data || visitorsResp || [];
+        totalVisitors = visitors.length;
+        activeVisitors = visitors.filter((v: any) => !v.outTime).length;
 
-          const visitorsResp = await apiService.getVisitors({ page: 1, limit: 100 });
-          totalVisitors = visitorsResp.data?.length || 0;
-
-        }
-
-        setStats({
-          totalUsers,
-          totalBills,
-          pendingBills,
-          totalVisitors,
-          totalIssues,
-          pendingIssues,
-          recentNotices: noticesResp.data || [],
-          recentIssues: issues || []
-        });
-      } catch (error) {
-        console.error('Dashboard fetch error:', error);
-      } finally {
-        setIsLoading(false);
+        console.log(`✅ Visitors count: total=${totalVisitors}, active=${activeVisitors}`);
       }
-    };
 
-    fetchDashboardData();
-  }, [hasRole]);
+      // Admin/Committee see everything
+      if (hasRole([UserRole.ADMIN, UserRole.COMMITTEE])) {
+        const usersResp = await apiService.getUsers();
+        totalUsers = usersResp.data?.length || 0;
+
+        const billsResp = await apiService.getBills({ page: 1, limit: 100 });
+        const bills = billsResp.data || [];
+        totalBills = bills.length;
+        pendingBills = bills.filter(b => b.status === "Pending").length;
+
+        const issuesRespFull = await apiService.getIssues({ page: 1, limit: 100 });
+        totalIssues = issuesRespFull?.length || 0;
+        pendingIssues = issuesRespFull?.filter(i => i.status === "open").length || 0;
+
+        const visitorsResp = await apiService.getVisitors({ page: 1, limit: 100 });
+        const visitors = visitorsResp.data || visitorsResp || [];
+        totalVisitors = visitors.length;
+        activeVisitors = visitors.filter((v: any) => !v.outTime).length;
+      }
+
+      setStats({
+        totalUsers,
+        totalBills,
+        pendingBills,
+        totalVisitors,
+        activeVisitors,
+        totalIssues,
+        pendingIssues,
+        recentNotices: noticesResp.data || [],
+        recentIssues: issues || []
+      });
+
+      console.log("📈 Final counts:", {
+        totalUsers,
+        totalBills,
+        pendingBills,
+        totalVisitors,
+        activeVisitors,
+        totalIssues,
+        pendingIssues
+      });
+
+    } catch (error) {
+      console.error("Dashboard fetch error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchDashboardData();
+}, [hasRole]);
+
+
 
   const getRoleBasedStats = () => {
     if (hasRole([UserRole.ADMIN, UserRole.COMMITTEE])) {
@@ -112,11 +153,12 @@ export default function DashboardPage() {
         { title: 'My Visitors', value: stats.totalVisitors, icon: UserCheck, color: 'text-purple-600', bgColor: 'bg-purple-100' }
       ];
     } else if (hasRole([UserRole.SECURITY])) {
-      return [
-        { title: 'Today\'s Visitors', value: stats.totalVisitors, icon: UserCheck, color: 'text-purple-600', bgColor: 'bg-purple-100' },
-        { title: 'Active Visitors', value: 5, icon: Clock, color: 'text-blue-600', bgColor: 'bg-blue-100' }
-      ];
-    }
+  return [
+    { title: "Today's Visitors", value: stats.totalVisitors, icon: UserCheck, color: 'text-purple-600', bgColor: 'bg-purple-100' },
+    { title: 'Active Visitors', value: stats.activeVisitors, icon: Clock, color: 'text-blue-600', bgColor: 'bg-blue-100' },
+  ];
+}
+
     return [];
   };
 

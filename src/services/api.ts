@@ -165,7 +165,6 @@ deleteIssue(id: string) {
     return this.api.delete<ApiResponse<null>>(`/notices/${id}`).then(res => res.data);
   }
 
- // ---------------- Bills ----------------
 // ---------------- Bills ----------------
 getBills(params?: { userId?: string; status?: string; page?: number; limit?: number }) {
   return this.api.get<PaginatedResponse<Bill>>('/bills', {
@@ -267,17 +266,24 @@ async getPayments(params?: {
   }
 
   // ---------------- Visitors ----------------
-getVisitors(params?: { hostId?: string; date?: string; page?: number; limit?: number }) {
-  return this.api.get<PaginatedResponse<Visitor>>('/visitors', { params }).then(res => res.data);
+getVisitors(params?: { flatNumber?: string; date?: string; page?: number; limit?: number }) {
+  return this.api
+    .get<PaginatedResponse<Visitor>>('/visitors', { params })
+    .then(res => res.data);
 }
 
-createVisitor(data: { name: string; vehicle?: string; purpose: string; hostId: string }) {
-  return this.api.post<ApiResponse<Visitor>>('/visitors', data).then(res => res.data);
+createVisitor(data: { name: string; flatNumber: string; vehicle?: string; purpose: string }) {
+  return this.api
+    .post<ApiResponse<Visitor>>('/visitors', data)
+    .then(res => res.data);
 }
 
-checkoutVisitor(id: string, outTime: string) {
-  return this.api.patch<ApiResponse<Visitor>>(`/visitors/${id}/checkout`, { outTime }).then(res => res.data);
+checkoutVisitor(id: string) {
+  return this.api
+    .patch<ApiResponse<Visitor>>(`/visitors/${id}/checkout`)
+    .then(res => res.data);
 }
+
 
   // ---------------- Technicians ----------------
 getTechnicians() {

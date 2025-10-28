@@ -1,8 +1,7 @@
 {
-  "/not-found": "app/not-found.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/users/page": "app/users/page.js",
+  "/technicians/page": "app/technicians/page.js",
+  "/visitors/page": "app/visitors/page.js",
   "/login/page": "app/login/page.js",
-  "/bills/page": "app/bills/page.js",
-  "/payments/page": "app/payments/page.js"
+  "/dashboard/page": "app/dashboard/page.js",
+  "/notices/page": "app/notices/page.js"
 }

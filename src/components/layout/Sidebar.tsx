@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserRole } from '@/types';
 import { cn } from '@/lib/utils';
@@ -29,6 +29,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout, hasRole, hasPermission } = useAuth();
 
   const navigation = [
@@ -67,13 +68,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       permission: 'bills:read'
     },
     {
-      name: 'Payments',
-      href: '/payments',
-      icon: CreditCard,
-      roles: [UserRole.ADMIN, UserRole.COMMITTEE, UserRole.RESIDENT, UserRole.TENANT],
-      permission: 'payments:read'
-    },
-    {
       name: 'Notices',
       href: '/notices',
       icon: Bell,
@@ -110,6 +104,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     return true;
   });
 
+  const handleLogout = async () => {
+    await logout();
+    router.push('/login');
+  };
+
   return (
     <>
       {/* Mobile backdrop */}
@@ -122,12 +121,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <div
-  className={cn(
-    'fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:static lg:translate-x-0',
-    isOpen ? 'translate-x-0' : '-translate-x-full'
-  )}
->
-
+        className={cn(
+          'fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:static lg:translate-x-0',
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
@@ -146,7 +144,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2">
+          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
             {filteredNavigation.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -186,7 +184,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <LogOut className="w-4 h-4" />
