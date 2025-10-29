@@ -1,9 +1,20 @@
-// src/server.ts
 import express, { Application } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import morgan from "morgan";
+
+// ✅ Import all models before routes
+import "./models/user.model";
+import "./models/amenities.model";
+import "./models/bookings.model";
+import "./models/bills.model";
+import "./models/issues.model";
+import "./models/technicians.model";
+import "./models/visitors.model";
+import "./models/notice.model";
+
+// ✅ Then import routes
 import authRoutes from "./routes/auth.routes";
 import usersRoutes from "./routes/users.routes";
 import noticeRoutes from "./routes/notices.routes";
@@ -22,33 +33,28 @@ const app: Application = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/habitat";
 
-app.use(cors({
-  origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'Cache-Control',
-    'Pragma',
-    'Expires'
-  ],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma", "Expires"],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(morgan("dev"));
 
-mongoose.connect(MONGO_URI, {
-  tls: true,
-  tlsAllowInvalidCertificates: true, // 👈 local testing only
-})
-.then(() => console.log("✅ MongoDB connected successfully"))
-.catch((err) => {
-  console.error("❌ Mongo connection error:", err);
-  process.exit(1);
-});
-
-
+mongoose
+  .connect(MONGO_URI, {
+    tls: true,
+    tlsAllowInvalidCertificates: true, // 👈 local testing only
+  })
+  .then(() => console.log("✅ MongoDB connected successfully"))
+  .catch((err) => {
+    console.error("❌ Mongo connection error:", err);
+    process.exit(1);
+  });
 
 app.get("/", (req, res) => res.send("Habitat backend running"));
 
@@ -61,7 +67,6 @@ app.use("/api/bookings", bookingsRoutes);
 app.use("/api/issues", issuesRoutes);
 app.use("/api/technicians", techniciansRoutes);
 app.use("/api/visitors", visitorsRoutes);
-
 
 app.use(errorHandler);
 

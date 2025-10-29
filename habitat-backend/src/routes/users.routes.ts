@@ -12,27 +12,29 @@ router.use((req, res, next) => {
   next();
 });
 
-
+// ✅ Allow Committee to create users
 router.post(
   "/",
   verifyAuth,
-  permit([UserRole.Admin]),
+  permit([UserRole.Admin, UserRole.Committee]),
   UsersController.createUser
 );
 
+// ✅ Allow Committee to list users (for dashboard)
+router.get("/", verifyAuth, permit([UserRole.Admin, UserRole.Committee]), UsersController.getAllUsers);
 
-// Only admin can list or delete arbitrary users
-router.get("/", verifyAuth, permit([UserRole.Admin]), UsersController.getAllUsers);
+// Get current logged-in user info
 router.get("/me", verifyAuth, async (req, res) => {
-  // simple route: return req.user (already attached)
   return res.json({ success: true, data: req.user });
 });
 
-// Admin or the user himself can view or update profile
-router.get("/:id", verifyAuth, UsersController.getUserById);
-router.put("/:id", verifyAuth, UsersController.updateUser);
+// Admin or Committee can view any user profile
+router.get("/:id", verifyAuth, permit([UserRole.Admin, UserRole.Committee]), UsersController.getUserById);
+
+// ✅ Allow Committee to update users
+router.put("/:id", verifyAuth, permit([UserRole.Admin, UserRole.Committee]), UsersController.updateUser);
+
+// ❌ Only Admin can delete users (Committee cannot)
 router.delete("/:id", verifyAuth, permit([UserRole.Admin]), UsersController.deleteUser);
-
-
 
 export default router;
