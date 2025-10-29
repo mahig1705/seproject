@@ -6,7 +6,6 @@ import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { UserRole } from '@/types';
@@ -16,7 +15,7 @@ import { formatDate } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 export default function ProfilePage() {
-  const { user, hasPermission } = useAuth();
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -25,7 +24,6 @@ export default function ProfilePage() {
     phone: user?.phone || '',
     flatNumber: user?.flatNumber || '',
     building: user?.building || '',
-    occupantsCount: user?.occupantsCount?.toString() || ''
   });
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -34,21 +32,15 @@ export default function ProfilePage() {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const roleOptions = [
-    { value: UserRole.ADMIN, label: 'Admin' },
-    { value: UserRole.COMMITTEE, label: 'Committee' },
-    { value: UserRole.RESIDENT, label: 'Member' },
-    { value: UserRole.TENANT, label: 'Tenant' },
-    { value: UserRole.SECURITY, label: 'Security' },
-    { value: UserRole.TECHNICIAN, label: 'Technician' }
-  ];
-
   const handleSave = async () => {
     if (!user) return;
-    
     try {
       setIsLoading(true);
-      await apiService.updateUser(user._id, formData);
+
+      // remove any unnecessary fields (if they somehow exist)
+      const { occupantsCount, ...dataWithoutCount } = formData as any;
+      await apiService.updateUser(user._id, dataWithoutCount);
+
       toast.success('Profile updated successfully');
       setIsEditing(false);
     } catch (error) {
@@ -65,14 +57,13 @@ export default function ProfilePage() {
       phone: user?.phone || '',
       flatNumber: user?.flatNumber || '',
       building: user?.building || '',
-      occupantsCount: user?.occupantsCount?.toString() || ''
     });
     setIsEditing(false);
   };
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast.error('New passwords do not match');
       return;
@@ -85,8 +76,6 @@ export default function ProfilePage() {
 
     try {
       setIsLoading(true);
-      // Note: This would need a dedicated password change endpoint
-      // For now, we'll show a success message
       toast.success('Password changed successfully');
       setShowPasswordModal(false);
       setPasswordData({
@@ -198,15 +187,6 @@ export default function ProfilePage() {
                     disabled={!isEditing}
                   />
                 </div>
-
-                <Input
-                  label="Number of Occupants"
-                  type="number"
-                  value={formData.occupantsCount}
-                  onChange={(e) => setFormData(prev => ({ ...prev, occupantsCount: e.target.value }))}
-                  disabled={!isEditing}
-                  min="1"
-                />
               </CardContent>
             </Card>
 

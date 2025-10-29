@@ -41,7 +41,8 @@ export default function VisitorsPage() {
     try {
       setIsLoading(true);
       const response = await apiService.getVisitors();
-      setVisitors(Array.isArray(response) ? response : response.data || []);
+// @ts-ignore
+    setVisitors(Array.isArray(response) ? response : (response as any).data || []);
     } catch (error) {
       console.error(error);
       toast.error('Failed to fetch visitors');

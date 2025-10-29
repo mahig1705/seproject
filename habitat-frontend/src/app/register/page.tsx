@@ -38,7 +38,6 @@ export default function RegisterPage() {
     { value: 'resident', label: 'Resident' },
     { value: 'committee', label: 'Committee' },
     { value: 'security', label: 'Security' },
-    { value: 'technician', label: 'Technician' }
   ];
 
   const validateForm = () => {
