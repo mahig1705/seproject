@@ -4,9 +4,9 @@ const service = new BillsService();
 
 export class BillsController {
   // ✅ FIX: Wrap response in consistent format
-  async getAll(req: Request, res: Response) {
+  async getAll(_req: Request, res: Response) {
     try {
-      const { userId, status } = req.query;
+      const { userId, status } = _req.query;
       const data = await service.getAll({ 
         userId: userId as string, 
         status: status as string 
@@ -17,9 +17,9 @@ export class BillsController {
     }
   }
 
-  async getById(req: Request, res: Response) {
+  async getById(_req: Request, res: Response) {
     try {
-      const data = await service.getById(req.params.id);
+      const data = await service.getById(_req.params.id);
       if (!data) return res.status(404).json({ success: false, message: 'Bill not found' });
       res.json({ success: true, data }); // ✅ Wrapped
     } catch (err: any) {
@@ -27,18 +27,18 @@ export class BillsController {
     }
   }
 
-  async create(req: Request, res: Response) {
+  async create(_req: Request, res: Response) {
     try {
-      const data = await service.create(req.body);
+      const data = await service.create(_req.body);
       res.status(201).json({ success: true, data }); // ✅ Wrapped
     } catch (err: any) {
       res.status(400).json({ success: false, message: err.message });
     }
   }
 
-  async update(req: Request, res: Response) {
+  async update(_req: Request, res: Response) {
     try {
-      const data = await service.update(req.params.id, req.body);
+      const data = await service.update(_req.params.id, _req.body);
       if (!data) return res.status(404).json({ success: false, message: 'Bill not found' });
       res.json({ success: true, data }); // ✅ Wrapped
     } catch (err: any) {
@@ -46,28 +46,28 @@ export class BillsController {
     }
   }
 
-  async delete(req: Request, res: Response) {
+  async delete(_req: Request, res: Response) {
     try {
-      await service.delete(req.params.id);
+      await service.delete(_req.params.id);
       res.json({ success: true, message: 'Bill deleted' }); // ✅ Changed from 204
     } catch (err: any) {
       res.status(500).json({ success: false, message: err.message });
     }
   }
 
-  async payBill(req: Request, res: Response) {
+  async payBill(_req: Request, res: Response) {
     try {
-      const { amount, gatewayRef } = req.body;
-      const data = await service.payBill(req.params.id, amount, gatewayRef);
+      const { amount, gatewayRef } = _req.body;
+      const data = await service.payBill(_req.params.id, amount, gatewayRef);
       res.json({ success: true, data }); // ✅ Wrapped
     } catch (err: any) {
       res.status(400).json({ success: false, message: err.message });
     }
   }
 
-  async generateBills(req: Request, res: Response) {
+  async generateBills(_req: Request, res: Response) {
     try {
-      const billsData = req.body;
+      const billsData = _req.body;
       const data = await service.generateBills(billsData);
       res.status(201).json({ success: true, data }); // ✅ Wrapped
     } catch (err: any) {

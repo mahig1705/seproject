@@ -4,7 +4,7 @@ const service = new AmenitiesService();
 
 export class AmenitiesController {
     // GET /api/amenities
-    async getAll(req: Request, res: Response) {
+    async getAll(_req: Request, res: Response) {
         try {
             const data = await service.getAll();
             res.status(200).json({ data }); // wrap in "data"
