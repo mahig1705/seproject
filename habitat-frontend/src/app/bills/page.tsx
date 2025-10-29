@@ -40,54 +40,56 @@ export default function BillsPage() {
     selectedUsers: [] as string[]
   });
 
+  // Ensure status option values match normalized lowercase statuses
   const statusOptions = [
     { value: '', label: 'All Status' },
-    { value: PaymentStatus.PENDING, label: 'Pending' },
-    { value: PaymentStatus.COMPLETED, label: 'Completed' },
-    { value: PaymentStatus.FAILED, label: 'Failed' },
-    { value: PaymentStatus.REFUNDED, label: 'Refunded' }
+    { value: (PaymentStatus.PENDING as unknown as string) || 'pending', label: 'Pending' },
+    { value: (PaymentStatus.COMPLETED as unknown as string) || 'completed', label: 'Completed' },
+    { value: (PaymentStatus.FAILED as unknown as string) || 'failed', label: 'Failed' },
+    { value: (PaymentStatus.REFUNDED as unknown as string) || 'refunded', label: 'Refunded' }
   ];
 
-  // ✅ FIXED: Proper useEffect with all dependencies
-  // In BillsPage component
-useEffect(() => {
-  const fetchData = async () => {
-    if (!user) return;
+  // ---------------- Fetch on mount ----------------
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!user) return;
 
-    try {
-      setIsLoading(true);
+      try {
+        setIsLoading(true);
 
-      const billsFilter = (user.role === UserRole.ADMIN || user.role === UserRole.COMMITTEE)
-        ? {}
-        : { userId: user._id };
+        const billsFilter = (user.role === UserRole.ADMIN || user.role === UserRole.COMMITTEE)
+          ? {}
+          : { userId: user._id };
 
-      const res = await apiService.getBills(billsFilter) as Bill[]; // ✅ Type assertion
-      console.log('📦 Bills data from backend:', res);
+        const res = await apiService.getBills(billsFilter) as Bill[]; // type assertion to Bill[]
+        console.log('📦 Bills data from backend:', res);
+        console.log('🧾 Bill statuses:', res.map(b => b.status));
 
-      const normalized = res.map((b: Bill) => ({ // ✅ Explicitly type b
-        ...b,
-        status: b.status || PaymentStatus.PENDING,
-        user: b.user || { name: 'Unknown', flatNumber: '-' }
-      }));
+        // Normalize: set default and convert to lowercase
+        const normalized: Bill[] = res.map((b: any) => ({
+          ...b,
+          status: (b.status?.toLowerCase?.() || 'pending') as PaymentStatus,
+          user: b.user || { name: 'Unknown', flatNumber: '-' }
+        }));
+        setBills(normalized);
 
-      setBills(normalized);
 
-      if (user.role === UserRole.ADMIN || user.role === UserRole.COMMITTEE) {
-        const usersResp = await apiService.getUsers();
-        setUsers(usersResp.data || []);
+        setBills(normalized);
+
+        if (user.role === UserRole.ADMIN || user.role === UserRole.COMMITTEE) {
+          const usersResp = await apiService.getUsers();
+          setUsers(usersResp.data || []);
+        }
+      } catch (err) {
+        console.error('❌ Failed to fetch bills:', err);
+        toast.error('Failed to load bills');
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-    } catch (err) {
-      console.error('❌ Failed to fetch bills:', err);
-      toast.error('Failed to load bills');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  fetchData();
-}, [user]);
-
+    fetchData();
+  }, [user]);
 
   // ✅ Separate function for refetching
   const fetchBills = async () => {
@@ -100,16 +102,18 @@ useEffect(() => {
         ? {}
         : { userId: user._id };
 
-      // ✅ CORRECT - res is already Bill[]
       const res = await apiService.getBills(billsFilter);
       const data = Array.isArray(res) ? res : [];
 
-      const normalized = data.map((b: any) => ({
+      const normalized: Bill[] = res.map((b: any) => ({
         ...b,
-        status: b.status || PaymentStatus.PENDING,
+        status: (b.status?.toLowerCase?.() || 'pending') as PaymentStatus,
         user: b.user || { name: 'Unknown', flatNumber: '-' }
       }));
+      setBills(normalized);
 
+
+      console.log('📦 Refetched bills:', normalized);
       setBills(normalized);
     } catch (err) {
       console.error('❌ Failed to fetch bills:', err);
@@ -123,7 +127,7 @@ useEffect(() => {
   const openPayModal = (bill: Bill) => {
     setSelectedBill(bill);
     setPayFormData({
-      amount: bill.amount.toString(),
+      amount: bill.amount?.toString() ?? '',
       gatewayRef: ''
     });
     setShowPayModal(true);
@@ -138,7 +142,8 @@ useEffect(() => {
       toast.success('Payment processed successfully');
       setShowPayModal(false);
       fetchBills();
-    } catch {
+    } catch (err) {
+      console.error('❌ Payment error:', err);
       toast.error('Failed to process payment');
     }
   };
@@ -175,44 +180,51 @@ useEffect(() => {
       setShowGenerateModal(false);
       resetGenerateForm();
       fetchBills();
-    } catch {
+    } catch (err) {
+      console.error('❌ Generate bills error:', err);
       toast.error('Failed to generate bills');
     }
   };
 
-  // ✅ FIXED: Safe filtering with optional chaining
+  // ---------------- Filtering ----------------
   const filteredBills = bills.filter(bill => {
-    const userName = bill.user?.name?.toLowerCase() || '';
-    const description = bill.description?.toLowerCase() || '';
-    
-    const matchesSearch =
-      description.includes(searchTerm.toLowerCase()) ||
-      userName.includes(searchTerm.toLowerCase());
+  const userName = bill.user?.name?.toLowerCase() || '';
+  const description = bill.description?.toLowerCase() || '';
+  const matchesSearch =
+    description.includes(searchTerm.toLowerCase()) ||
+    userName.includes(searchTerm.toLowerCase());
 
-    const matchesStatus = !statusFilter || bill.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const billStatus = bill.status?.toLowerCase?.() || '';
+  const filterStatus = statusFilter?.toLowerCase?.() || '';
+  const matchesStatus = !filterStatus || billStatus === filterStatus;
+
+  return matchesSearch && matchesStatus;
+});
+
 
   // ---------------- Helpers ----------------
-  const getStatusBadgeVariant = (status: PaymentStatus) => {
-    switch (status) {
-      case PaymentStatus.PENDING: return 'warning';
-      case PaymentStatus.COMPLETED: return 'success';
-      case PaymentStatus.FAILED: return 'danger';
-      case PaymentStatus.REFUNDED: return 'info';
+  // Accept string status (normalized to lowercase)
+  const getStatusBadgeVariant = (status: string | undefined) => {
+    const s = (status || '').toString().toLowerCase();
+    switch (s) {
+      case 'pending': return 'warning';
+      case 'completed': return 'success';
+      case 'failed': return 'danger';
+      case 'refunded': return 'info';
       default: return 'default';
     }
   };
 
   const getTotalStats = () => {
-    const totalBills = bills.length;
-    const pendingBills = bills.filter(b => b.status === PaymentStatus.PENDING).length;
-    const totalAmount = bills.reduce((sum, b) => sum + (b.amount || 0), 0);
-    const pendingAmount = bills
-      .filter(b => b.status === PaymentStatus.PENDING)
-      .reduce((sum, b) => sum + (b.amount || 0), 0);
-    return { totalBills, pendingBills, totalAmount, pendingAmount };
-  };
+  const totalBills = bills.length;
+  const pendingBills = bills.filter(b => b.status?.toLowerCase() === 'pending').length;
+  const totalAmount = bills.reduce((sum, b) => sum + (b.amount || 0), 0);
+  const pendingAmount = bills
+    .filter(b => b.status?.toLowerCase() === 'pending')
+    .reduce((sum, b) => sum + (b.amount || 0), 0);
+  return { totalBills, pendingBills, totalAmount, pendingAmount };
+};
+
 
   const stats = getTotalStats();
 
@@ -344,9 +356,11 @@ useEffect(() => {
                       <TableCell>{bill.description}</TableCell>
                       <TableCell>{formatCurrency(bill.amount)}</TableCell>
                       <TableCell>{formatDate(bill.dueDate)}</TableCell>
-                      <TableCell><Badge variant={getStatusBadgeVariant(bill.status)}>{bill.status}</Badge></TableCell>
                       <TableCell>
-                        {user.role === UserRole.RESIDENT && bill.status === PaymentStatus.PENDING && (
+                        <Badge variant={getStatusBadgeVariant(bill.status)}>{(bill.status || '').toString().charAt(0).toUpperCase() + (bill.status || '').toString().slice(1)}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        {user.role === UserRole.RESIDENT && (bill.status?.toString().toLowerCase() === (PaymentStatus.PENDING as unknown as string || 'pending')) && (
                           <Button variant="outline" size="sm" onClick={() => openPayModal(bill)}>
                             Pay Now
                           </Button>
