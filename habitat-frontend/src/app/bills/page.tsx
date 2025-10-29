@@ -276,11 +276,13 @@ export default function BillsPage() {
             <Button variant="outline" onClick={fetchBills}>
               <RefreshCcw className="w-4 h-4 mr-2" /> Refresh
             </Button>
-            {hasPermission('bills:write') && (
-              <Button onClick={() => setShowGenerateModal(true)}>
-                <Plus className="w-4 h-4 mr-2" /> Generate Bills
-              </Button>
-            )}
+            {hasPermission('bills:write') && 
+ (user.role === UserRole.ADMIN || user.role === UserRole.COMMITTEE) && (
+  <Button onClick={() => setShowGenerateModal(true)}>
+    <Plus className="w-4 h-4 mr-2" /> Generate Bills
+  </Button>
+)}
+
             <Button variant="outline" onClick={handleExport}>
               <Download className="w-4 h-4 mr-2" /> Export
             </Button>
