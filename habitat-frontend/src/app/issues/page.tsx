@@ -33,7 +33,6 @@ export default function IssuesPage() {
     description: '',
     status: IssueStatus.OPEN,
     images: [] as string[],
-    reporterId: '',
     technician: ''
   });
 
@@ -114,7 +113,6 @@ export default function IssuesPage() {
       description: '',
       status: IssueStatus.OPEN,
       images: [],
-      reporterId: '',
       technician: ''
     });
   };
@@ -126,7 +124,6 @@ export default function IssuesPage() {
       description: issue.description,
       status: issue.status,
       images: issue.images || [],
-      reporterId: issue.reporter?._id || '',
       technician: issue.technician?._id || ''
     });
     setShowEditModal(true);

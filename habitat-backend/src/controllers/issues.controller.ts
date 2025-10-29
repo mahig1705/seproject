@@ -8,7 +8,7 @@ export class IssuesController {
     async getAll(req: Request, res: Response) {
         try {
             const data = await service.getAll();
-            res.status(200).json({ data });  // ✅ wrap it
+            res.status(200).json({ data });
         } catch (err: any) {
             res.status(500).json({ message: err.message });
         }
@@ -24,25 +24,42 @@ export class IssuesController {
         }
     }
 
+    // ✅ FIXED: Automatically set reporter from JWT token
     async create(req: Request, res: Response) {
         try {
-            const data = await service.create(req.body);
+            // Extract userId from authenticated user (set by verifyAuth middleware)
+            const userId = (req as any).user?.id || (req as any).user?._id;
+            
+            if (!userId) {
+                return res.status(401).json({ 
+                    success: false, 
+                    message: 'User not authenticated' 
+                });
+            }
+
+            // ✅ Merge reporter with request body
+            const issueData = {
+                ...req.body,
+                reporter: userId // Set reporter automatically from JWT
+            };
+
+            const data = await service.create(issueData);
             res.status(201).json({ data });
         } catch (err: any) {
+            console.error('Create issue error:', err);
             res.status(500).json({ message: err.message });
         }
     }
 
     async update(req: Request, res: Response) {
-  try {
-    const data = await service.update(req.params.id, req.body);
-    if (!data) return res.status(404).json({ message: 'Issue not found' });
-    res.status(200).json({ data });
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
-  }
-}
-
+        try {
+            const data = await service.update(req.params.id, req.body);
+            if (!data) return res.status(404).json({ message: 'Issue not found' });
+            res.status(200).json({ data });
+        } catch (err: any) {
+            res.status(500).json({ message: err.message });
+        }
+    }
 
     async delete(req: Request, res: Response) {
         try {
