@@ -28,3 +28,4 @@ const verifyAuth = async (req, res, next) => {
     }
 };
 exports.verifyAuth = verifyAuth;
+//# sourceMappingURL=auth.middleware.js.map

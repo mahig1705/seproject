@@ -45,3 +45,4 @@ const UserSchema = new mongoose_1.Schema({
     isActive: { type: Boolean, default: true },
 }, { timestamps: true });
 exports.default = mongoose_1.default.model("User", UserSchema);
+//# sourceMappingURL=user.model.js.map

@@ -16,3 +16,4 @@ router.delete("/:id", auth_middleware_1.verifyAuth, controller.delete.bind(contr
 // ✅ Approve / Reject endpoint (Admin only)
 router.patch("/:id/approve", auth_middleware_1.verifyAuth, (0, role_middleware_1.permit)([enums_1.UserRole.Admin]), controller.approveBooking.bind(controller));
 exports.default = router;
+//# sourceMappingURL=bookings.routes.js.map

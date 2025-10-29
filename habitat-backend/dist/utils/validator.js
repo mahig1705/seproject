@@ -26,3 +26,4 @@ exports.updateUserSchema = joi_1.default.object({
     role: joi_1.default.string().valid(...Object.values(enums_1.UserRole)).optional(),
     isActive: joi_1.default.boolean().optional()
 });
+//# sourceMappingURL=validator.js.map

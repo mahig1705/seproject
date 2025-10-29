@@ -43,3 +43,4 @@ const noticeSchema = new mongoose_1.Schema({
     audience: [{ type: String, required: true }],
 }, { timestamps: true });
 exports.default = mongoose_1.default.model("Notice", noticeSchema);
+//# sourceMappingURL=notice.model.js.map

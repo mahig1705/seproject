@@ -10,3 +10,4 @@ router.post('/', controller.create.bind(controller));
 router.put('/:id', controller.update.bind(controller));
 router.delete('/:id', controller.delete.bind(controller));
 exports.default = router;
+//# sourceMappingURL=technicians.routes.js.map

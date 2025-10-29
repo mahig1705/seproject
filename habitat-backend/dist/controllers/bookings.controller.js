@@ -62,3 +62,4 @@ class BookingsController {
     }
 }
 exports.BookingsController = BookingsController;
+//# sourceMappingURL=bookings.controller.js.map

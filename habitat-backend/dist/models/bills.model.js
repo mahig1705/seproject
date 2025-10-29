@@ -51,3 +51,4 @@ const billsSchema = new mongoose_1.Schema({
     gatewayRef: { type: String } // stores payment gateway reference if paid
 }, { timestamps: true });
 exports.default = mongoose_1.default.model('Bills', billsSchema);
+//# sourceMappingURL=bills.model.js.map

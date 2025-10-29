@@ -70,3 +70,4 @@ class IssuesController {
     }
 }
 exports.IssuesController = IssuesController;
+//# sourceMappingURL=issues.controller.js.map

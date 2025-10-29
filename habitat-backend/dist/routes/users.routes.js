@@ -59,3 +59,4 @@ router.put("/:id", auth_middleware_1.verifyAuth, (0, role_middleware_1.permit)([
 // ❌ Only Admin can delete users (Committee cannot)
 router.delete("/:id", auth_middleware_1.verifyAuth, (0, role_middleware_1.permit)([enums_1.UserRole.Admin]), UsersController.deleteUser);
 exports.default = router;
+//# sourceMappingURL=users.routes.js.map

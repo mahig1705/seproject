@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import morgan from "morgan";
+import { ConnectOptions } from "mongoose";
 
 // ✅ Import all models before routes
 import "./models/user.model";
@@ -45,11 +46,10 @@ app.use(
 app.use(express.json());
 app.use(morgan("dev"));
 
-mongoose
-  .connect(MONGO_URI, {
-    tls: true,
-    tlsAllowInvalidCertificates: true, // 👈 local testing only
-  })
+mongoose.connect(process.env.MONGO_URI as string, {
+  tls: true,
+  tlsAllowInvalidCertificates: true
+} as ConnectOptions)
   .then(() => console.log("✅ MongoDB connected successfully"))
   .catch((err) => {
     console.error("❌ Mongo connection error:", err);

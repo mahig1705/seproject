@@ -16,3 +16,4 @@ var technicians_model_1 = require("./technicians.model");
 Object.defineProperty(exports, "Technicians", { enumerable: true, get: function () { return __importDefault(technicians_model_1).default; } });
 var visitors_model_1 = require("./visitors.model");
 Object.defineProperty(exports, "Visitors", { enumerable: true, get: function () { return __importDefault(visitors_model_1).default; } });
+//# sourceMappingURL=index.js.map

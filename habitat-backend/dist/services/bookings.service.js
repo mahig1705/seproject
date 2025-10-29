@@ -42,3 +42,4 @@ class BookingsService {
     }
 }
 exports.BookingsService = BookingsService;
+//# sourceMappingURL=bookings.service.js.map

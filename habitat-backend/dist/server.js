@@ -40,10 +40,9 @@ app.use((0, cors_1.default)({
 }));
 app.use(express_1.default.json());
 app.use((0, morgan_1.default)("dev"));
-mongoose_1.default
-    .connect(MONGO_URI, {
+mongoose_1.default.connect(process.env.MONGO_URI, {
     tls: true,
-    tlsAllowInvalidCertificates: true, // 👈 local testing only
+    tlsAllowInvalidCertificates: true
 })
     .then(() => console.log("✅ MongoDB connected successfully"))
     .catch((err) => {
@@ -67,3 +66,4 @@ process.on("SIGINT", async () => {
     await mongoose_1.default.connection.close();
     process.exit(0);
 });
+//# sourceMappingURL=server.js.map

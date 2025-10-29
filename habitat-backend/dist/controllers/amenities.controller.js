@@ -60,3 +60,4 @@ class AmenitiesController {
     }
 }
 exports.AmenitiesController = AmenitiesController;
+//# sourceMappingURL=amenities.controller.js.map

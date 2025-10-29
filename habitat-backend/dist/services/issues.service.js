@@ -40,3 +40,4 @@ class IssuesService {
     }
 }
 exports.IssuesService = IssuesService;
+//# sourceMappingURL=issues.service.js.map

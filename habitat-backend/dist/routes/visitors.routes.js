@@ -11,3 +11,4 @@ router.put('/:id', controller.update.bind(controller));
 router.patch('/:id/checkout', controller.checkoutVisitor.bind(controller)); // ✅ Fixed: checkout → checkoutVisitor
 router.delete('/:id', controller.delete.bind(controller));
 exports.default = router;
+//# sourceMappingURL=visitors.routes.js.map

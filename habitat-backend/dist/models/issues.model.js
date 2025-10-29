@@ -53,3 +53,4 @@ const issuesSchema = new mongoose_1.Schema({
     dueDate: { type: Date, default: null },
 }, { timestamps: true });
 exports.default = mongoose_1.default.model('Issues', issuesSchema);
+//# sourceMappingURL=issues.model.js.map

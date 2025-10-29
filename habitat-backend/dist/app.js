@@ -15,3 +15,4 @@ app.use(express_1.default.json());
 app.use("/api/v1", routes_1.default);
 app.use(error_middleware_1.errorHandler);
 exports.default = app;
+//# sourceMappingURL=app.js.map

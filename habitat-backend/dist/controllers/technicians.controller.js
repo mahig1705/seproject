@@ -71,3 +71,4 @@ class TechniciansController {
     }
 }
 exports.TechniciansController = TechniciansController;
+//# sourceMappingURL=technicians.controller.js.map

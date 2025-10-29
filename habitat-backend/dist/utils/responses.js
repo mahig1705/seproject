@@ -5,3 +5,4 @@ const successResponse = (res, data, message = "Success", status = 200) => res.st
 exports.successResponse = successResponse;
 const errorResponse = (res, message = "Error", status = 500, data = null) => res.status(status).json({ success: false, message, data });
 exports.errorResponse = errorResponse;
+//# sourceMappingURL=responses.js.map

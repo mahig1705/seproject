@@ -98,3 +98,4 @@ const deleteNotice = async (req, res) => {
     }
 };
 exports.deleteNotice = deleteNotice;
+//# sourceMappingURL=notices.controller.js.map

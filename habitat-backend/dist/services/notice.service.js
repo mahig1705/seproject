@@ -26,3 +26,4 @@ const deleteNotice = async (id) => {
     return await notice_model_1.default.findByIdAndDelete(id);
 };
 exports.deleteNotice = deleteNotice;
+//# sourceMappingURL=notice.service.js.map

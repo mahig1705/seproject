@@ -9,3 +9,4 @@ const bookingsSchema = new mongoose_1.Schema({
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
 }, { timestamps: true });
 exports.default = (0, mongoose_1.model)("Bookings", bookingsSchema);
+//# sourceMappingURL=bookings.model.js.map

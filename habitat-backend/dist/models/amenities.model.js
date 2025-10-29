@@ -38,3 +38,4 @@ const amenitiesSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
 }, { timestamps: true });
 exports.default = mongoose_1.default.model('Amenities', amenitiesSchema);
+//# sourceMappingURL=amenities.model.js.map

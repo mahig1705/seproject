@@ -18,3 +18,4 @@ router.use('/bills', bills_routes_1.default);
 router.use('/technicians', technicians_routes_1.default);
 router.use('/visitors', visitors_routes_1.default);
 exports.default = router;
+//# sourceMappingURL=index.js.map

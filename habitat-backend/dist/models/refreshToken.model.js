@@ -40,3 +40,4 @@ const refreshTokenSchema = new mongoose_1.Schema({
     expiresAt: { type: Date, required: true }
 }, { timestamps: true });
 exports.default = mongoose_1.default.model("RefreshToken", refreshTokenSchema);
+//# sourceMappingURL=refreshToken.model.js.map

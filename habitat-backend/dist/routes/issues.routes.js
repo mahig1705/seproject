@@ -14,3 +14,4 @@ router.post("/", auth_middleware_1.verifyAuth, controller.create.bind(controller
 router.patch("/:id", auth_middleware_1.verifyAuth, controller.update.bind(controller));
 router.delete("/:id", auth_middleware_1.verifyAuth, (0, role_middleware_1.permit)([enums_1.UserRole.Admin]), controller.delete.bind(controller));
 exports.default = router;
+//# sourceMappingURL=issues.routes.js.map

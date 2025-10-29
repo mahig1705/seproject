@@ -42,3 +42,4 @@ const techniciansSchema = new mongoose_1.Schema({
     isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 exports.default = mongoose_1.default.model('Technicians', techniciansSchema);
+//# sourceMappingURL=technicians.model.js.map

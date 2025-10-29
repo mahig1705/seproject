@@ -14,3 +14,4 @@ router.patch('/:id/pay', controller.payBill.bind(controller));
 router.post('/generate', controller.generateBills.bind(controller));
 router.post('/:id/pay', controller.payBill.bind(controller));
 exports.default = router;
+//# sourceMappingURL=bills.routes.js.map

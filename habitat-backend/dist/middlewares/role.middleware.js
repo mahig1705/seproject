@@ -18,3 +18,4 @@ const permit = (roles) => {
     };
 };
 exports.permit = permit;
+//# sourceMappingURL=role.middleware.js.map

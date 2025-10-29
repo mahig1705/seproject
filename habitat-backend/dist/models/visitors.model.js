@@ -43,3 +43,4 @@ const visitorSchema = new mongoose_1.Schema({
     outTime: { type: Date, default: null },
 }, { timestamps: true });
 exports.default = mongoose_1.default.model('Visitor', visitorSchema);
+//# sourceMappingURL=visitors.model.js.map

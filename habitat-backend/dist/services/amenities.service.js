@@ -23,3 +23,4 @@ class AmenitiesService {
     }
 }
 exports.AmenitiesService = AmenitiesService;
+//# sourceMappingURL=amenities.service.js.map

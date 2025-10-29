@@ -99,3 +99,4 @@ const createUser = async (req, res) => {
     }
 };
 exports.createUser = createUser;
+//# sourceMappingURL=users.controller.js.map

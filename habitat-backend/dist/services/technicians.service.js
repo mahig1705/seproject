@@ -23,3 +23,4 @@ class TechniciansService {
     }
 }
 exports.TechniciansService = TechniciansService;
+//# sourceMappingURL=technicians.service.js.map

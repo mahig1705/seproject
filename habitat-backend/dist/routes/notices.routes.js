@@ -48,3 +48,4 @@ router.put("/:id", noticeController.updateNotice);
 router.patch('/:id', noticeController.updateNotice);
 router.delete("/:id", noticeController.deleteNotice);
 exports.default = router;
+//# sourceMappingURL=notices.routes.js.map

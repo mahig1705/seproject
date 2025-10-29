@@ -16,3 +16,4 @@ var Gender;
     Gender["Female"] = "female";
     Gender["Other"] = "other";
 })(Gender || (exports.Gender = Gender = {}));
+//# sourceMappingURL=enums.js.map
