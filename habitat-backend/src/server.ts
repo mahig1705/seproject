@@ -36,7 +36,7 @@ const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/habitat";
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000","https://seproject-six.vercel.app"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma", "Expires"],
     credentials: true,
