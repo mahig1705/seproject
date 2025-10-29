@@ -22,7 +22,7 @@ class ApiService {
   constructor() {
     this.api = axios.create({
       baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
-      timeout: 10000,
+      timeout: 60000,
     });
 
     // Attach auth token to all requests
