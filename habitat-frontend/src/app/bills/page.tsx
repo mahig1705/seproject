@@ -360,11 +360,12 @@ export default function BillsPage() {
                         <Badge variant={getStatusBadgeVariant(bill.status)}>{(bill.status || '').toString().charAt(0).toUpperCase() + (bill.status || '').toString().slice(1)}</Badge>
                       </TableCell>
                       <TableCell>
-                        {user.role === UserRole.RESIDENT && (bill.status?.toString().toLowerCase() === (PaymentStatus.PENDING as unknown as string || 'pending')) && (
+                        {user.role === UserRole.RESIDENT && (bill.status ?? '').toString().toLowerCase() === 'pending' && (
                           <Button variant="outline" size="sm" onClick={() => openPayModal(bill)}>
                             Pay Now
                           </Button>
                         )}
+
                       </TableCell>
                     </TableRow>
                   ))}
