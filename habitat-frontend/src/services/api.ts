@@ -21,7 +21,7 @@ class ApiService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
+      baseURL: process.env.NEXT_PUBLIC_API_URL || ' https://seproject-5q98.onrender.com/api'|| 'http://localhost:5000/api',
       timeout: 60000,
     });
 
